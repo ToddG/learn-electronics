@@ -37,10 +37,14 @@ Apparently setting the Digital IO pin to LOW is equivalent to setting it to GROU
 
 Done.
 
-# Notes
+## Notes
 
 I used ffmpeg to downsample the massive .mp4 my phone generated:
 (https://askubuntu.com/questions/1163156/how-to-resize-and-convert-mov-to-mp4-on-ubuntu-16-04)
 
      ffmpeg -i 03-spinning-led.mp4 -r 10 -s 400x400 03-spinning-led-thumb2.mp4
 
+##  End
+
+* ![Prev](../02-multisegment-led-arduino-uno/readme.md)
+* ![Next](../04-multi-segment-characters/readme.md)

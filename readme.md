@@ -5,6 +5,18 @@ Let's learn electronics together.
 
 Starting with the most basic circuits (and ICs), let's learn electronics via small projects and tutorials that we share here. To start, I'm approaching this with a series of 'hello world' tasks that become increasingly more interesting, see the Goals section below.
 
+## QuickStart
+
+### Phase 1
+
+#### Posts
+
+ * ![hello-world](posts/hello-world/01-multisegment-led)
+
+#### Source
+
+ * src/EightSegmentLED
+
 ## Dependencies
 
 ### Software
@@ -13,13 +25,19 @@ Starting with the most basic circuits (and ICs), let's learn electronics via sma
 
 ### Tools
 
+#### Complete Lab
+
 This is a more or less complete lab setup (you don't need all of this)
 
 * https://www.youtube.com/watch?v=R_PbjbRaO2E
 
+#### Cheap Lab
+
 This is a much cheaper lab setup (you only need some of this)
 
 * https://www.youtube.com/watch?v=HicV3Z6XLFA
+
+#### Minimalist Lab
 
 I think you could bootstrap without a scope, use an old wall wart for a power supply (or scavenge an old computer power supply), create a voltage divider with some resistors, and you are ready to go.
 
@@ -34,9 +52,13 @@ Things I think you need but you can go cheap on:
 * capacitors
 * resistors
 
+#### No Lab
+
+For the hello-world stuff, all you need is an arduino, a breadboard, some wires, a resistor, and an 8 segment LED. There are kits to be had for less than $25 that have all this and more.
+
 ### Books
 
-The Art Of Electronics (old version, may cost ~$20-40
+The Art Of Electronics (old version, may cost ~$20-40)
 
 * https://www.thriftbooks.com/w/the-art-of-electronics_paul-horowitz_winfield-hill/248534/#isbn=0521231515&idiq=4482077
 
@@ -48,7 +70,7 @@ Practical Electronics For Inventors
 
 * https://www.thriftbooks.com/w/practical-electronics-for-inventors_paul-scherz/308734/#isbn=0071452818&idiq=8674669
 
-I buy older books, then when I've read the whole thing (rarely happens) I buy the new book.
+I buy older books, then when I've read the whole thing (rarely but sometimes happens) I buy the new book.
 
 ### Chips
 
@@ -61,7 +83,7 @@ on a board later. I also ordered 4 chips with resistor, oscillator, and socket f
 
 ### Phase 2 : ESP32-S2
 
-This is about $60 with shipping from digikey
+The dev kit is about $60 with shipping from digikey:
 
 * https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/hw-reference/esp32s2/user-guide-esp32-s2-kaluga-1-kit.html
 * https://www.digikey.com/products/en?keywords=ESP32-S2-Kaluga-1%20Kit

@@ -12,7 +12,7 @@ Light up one of the LED segments.
 
 I don't have my printer hooked up, but here's what I think are the specs for this LED:
 
-![SM4105WS LED SPEC](https://www.velleman.eu/downloads/29/infosheets/vmp502_sma42056etc.pdf)
+![https://www.velleman.eu/downloads/29/infosheets/vmp502_sma42056etc.pdf](https://www.velleman.eu/downloads/29/infosheets/vmp502_sma42056etc.pdf)
 
 I've also downloaded the spec here:
 
@@ -42,6 +42,7 @@ So I whacked in a 220Ohm resistor, set my PS to 2.4V and limited the current to 
 
 ![success](resources/led-is-on.jpeg)
 
-----
-End
-----
+## End
+
+* ![Prev](../../../readme.md)
+* ![Next](../02-multisegment-led-arduino-uno/readme.md)

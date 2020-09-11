@@ -27,6 +27,10 @@ This didn't help the errors uploading, so I wound up loosening the access perms 
 
     sudo chmod 777 /dev/ttyUSB0
 
+### Docs
+
+* ![ATMega328P Datasheet](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf)
+
 ## Build
 
 Upload sketch to blink an LED (CTRL-U):
@@ -52,3 +56,8 @@ https://www.electronicwings.com/arduino/digital-gpio-of-arduino
 Trust me, the lower left segment is blinking. This hookup is using GND and pin 13 on the board.
 
 ![Blinking LED](resources/02-uno.jpeg)
+
+## End
+
+* ![Prev](../01-multisegment-led/readme.md)
+* ![Next](../03-multi-segment-led-rotate/readme.md)
