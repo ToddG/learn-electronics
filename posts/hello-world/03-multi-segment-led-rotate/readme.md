@@ -33,7 +33,7 @@ Cycle through all of the LED segments and light them up one at a time. The only 
 
 Apparently setting the Digital IO pin to LOW is equivalent to setting it to GROUND. Cool.
 
-![Spinning LED](resources/03-spinning-led-thumb2.mp4)
+[Spinning LED](resources/03-spinning-led-thumb2.mp4)
 
 Done.
 
@@ -46,5 +46,5 @@ I used ffmpeg to downsample the massive .mp4 my phone generated:
 
 ##  End
 
-* ![Prev](../02-multisegment-led-arduino-uno/readme.md)
-* ![Next](../04-multi-segment-characters/readme.md)
+* [Prev](../02-multisegment-led-arduino-uno/readme.md)
+* [Next](../04-multi-segment-characters/readme.md)

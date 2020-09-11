@@ -14,31 +14,31 @@ Same as 03.
 
 Now it's time to start looking at the language spec:
 
-![Sketch language Ref](https://www.arduino.cc/reference/en/)
+[Sketch language Ref](https://www.arduino.cc/reference/en/)
 
 Ok, I have a ton of questions about the language now, passing by reference vs. by value,
 as well as what is the proper design pattern here? Is this C? C++? WTF? And here I stumble
 upon this post:
 
-![ArduinoTheOOWay](https://paulmurraycbr.github.io/ArduinoTheOOWay.html)
+[ArduinoTheOOWay](https://paulmurraycbr.github.io/ArduinoTheOOWay.html)
 
 And I am stoked, because he is proposing a sane way to use OO in the exact way
 that my all time fave, Yegor, does here:
 
-![Elegant Objects](https://www.yegor256.com/elegant-objects.html)
+[Elegant Objects](https://www.yegor256.com/elegant-objects.html)
 
 And now that we are starting to write real code, it's time to switch to a
 *real* editor, one that supports refactoring, code completion, etc. _CLION_ is
 my choice (I have a personal license for the entire jetbrains tool suite):
 
-* ![CLION](https://plugins.jetbrains.com/clion)
-* ![CLION Arduino Plugin](https://plugins.jetbrains.com/plugin/7889-arduino)
+* [CLION](https://plugins.jetbrains.com/clion)
+* [CLION Arduino Plugin](https://plugins.jetbrains.com/plugin/7889-arduino)
 
 And now that we are using CLion, it's probably time to understand the make system
-that it is using, under the hood: ![CMake](https://cmake.org):
+that it is using, under the hood: [CMake](https://cmake.org):
 
-* ![CMake Tutorial](https://cmake.org/cmake/help/latest/guide/tutorial/index.html)
-* ![Build Tools Compared](https://medium.com/@julienjorge/an-overview-of-build-systems-mostly-for-c-projects-ac9931494444)
+* [CMake Tutorial](https://cmake.org/cmake/help/latest/guide/tutorial/index.html)
+* [Build Tools Compared](https://medium.com/@julienjorge/an-overview-of-build-systems-mostly-for-c-projects-ac9931494444)
 
 CLion is executing the following command:
 
@@ -98,11 +98,11 @@ CLion and Arduino Plugin Notes:
 
 ## Sketch
 
-![Code](resources/eight_segment_led.ino)
+[Code](resources/eight_segment_led.ino)
 
 The key things about this sketch are:
 
-* Use of the ![Runnable pattern](https://paulmurraycbr.github.io/ArduinoTheOOWay.html) for wiring stuff up
+* Use of the [Runnable pattern](https://paulmurraycbr.github.io/ArduinoTheOOWay.html) for wiring stuff up
 * Use of Abstract Base Classes (ABC) for polymorphism
 * Use of constructor injection (aka Elegant Objects) for composing objects
 
@@ -115,15 +115,15 @@ The program flow is :
 
 ## Success
 
-![Running](resources/04-sequenced-led.mp4)
+[Running](resources/04-sequenced-led.mp4)
 
 ## Notes
 
 A future post will cover running RUST on the AVR. Here's latest post I've found on the topic (2020):
 
-![RUST](https://dev.to/creativcoder/how-to-run-rust-on-arduino-uno-40c0)
+[RUST](https://dev.to/creativcoder/how-to-run-rust-on-arduino-uno-40c0)
 
 ## End
 
-* ![Prev](../03-multi-segment-led-rotate/readme.md)
-* ![Next](../05-multiplex/readme.md)
+* [Prev](../03-multi-segment-led-rotate/readme.md)
+* [Next](../04a-code-structure/readme.md)

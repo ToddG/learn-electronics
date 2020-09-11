@@ -8,8 +8,8 @@ set(${PROJECT_NAME}_BOARD uno)
 project(${PROJECT_NAME})
 
 # Define additional source and header files or default arduino sketch files
-# set(${PROJECT_NAME}_SRCS)
-# set(${PROJECT_NAME}_HDRS)
+set(${PROJECT_NAME}_SRCS src)
+set(${PROJECT_NAME}_HDRS src)
 
 ### Additional static libraries to include in the target.
 # set(${PROJECT_NAME}_LIBS)
@@ -18,7 +18,7 @@ project(${PROJECT_NAME})
 set(${PROJECT_NAME}_SKETCH eight_segment_led.ino)
 
 ### Add project directories into the build
-# add_subdirectory()
+#add_subdirectory(src)
 
 ### Additional settings to add non-standard or your own Arduino libraries.
 # For this example (libs will contain additional arduino libraries)

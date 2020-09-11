@@ -17,13 +17,12 @@ I just described is called "Charlieplexing":
 
 ## Sketch 1 : use an IO port for positive rail
 
-* https://sites.google.com/site/qeewiki/books/avr-guide/common-timer-theory
-
-* https://hackaday.com/2017/05/05/using-modern-c-techniques-with-arduino/
-* https://www.instructables.com/id/LED-Multiplexing-101-6-and-16-RGB-LEDs-With-Just-a/
 
 ## Links
 
+* https://sites.google.com/site/qeewiki/books/avr-guide/common-timer-theory
+* https://hackaday.com/2017/05/05/using-modern-c-techniques-with-arduino/
+* https://www.instructables.com/id/LED-Multiplexing-101-6-and-16-RGB-LEDs-With-Just-a/
 * http://www.righto.com/2009/07/secrets-of-arduino-pwm.html
 * https://www.arduino.cc/en/Tutorial/Foundations
 * https://www.arduino.cc/en/Main/Standalone
@@ -51,5 +50,5 @@ I just described is called "Charlieplexing":
 
 ## End
 
-* ![Prev](../04-multi-segment-characters/readme.md)
-* ![Next]()
+* [Prev](../04a-code-structure/readme.md)
+* [Next]()
