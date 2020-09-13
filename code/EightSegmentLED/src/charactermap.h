@@ -18,16 +18,6 @@ public:
      *
      */
     virtual const bool *display(uint8_t input) = 0;
-
-    /**
-     * Number of display elements
-     */
-     virtual const uint8_t num_segments() = 0;
-
-    /**
-     * Number of input mappings
-     */
-    virtual const uint8_t num_mappings() = 0;
 };
 
 /*
@@ -128,11 +118,11 @@ public:
         }
     }
 
-    const uint8_t num_segments(){
+    static const uint8_t num_segments(){
         return numSegments;
     }
 
-    const uint8_t num_mappings(){
+    static const uint8_t num_mappings(){
         return numMappings;
     }
 
