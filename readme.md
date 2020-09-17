@@ -11,7 +11,16 @@ Starting with the most basic circuits (and ICs), let's learn electronics via sma
 
 #### Posts
 
- * ![hello-world](posts/hello-world/01-multisegment-led)
+##### Hello World
+
+* [01-multisegment-led](posts/hello-world/01-multisegment-led)
+* [02-multisegment-led-arduino-uno](posts/hello-world/02-multisegment-led-arduino-uno)
+* [03-multi-segment-led-rotate](posts/hello-world/03-multi-segment-led-rotate)
+* [04a-code-structure](posts/hello-world/04a-code-structure)
+* [04-multi-segment-characters](posts/hello-world/04-multi-segment-characters)
+* [05-multiplex](posts/hello-world/05-multiplex)
+* [06-blinky-led-rust-arduino](posts/hello-world/06-blinky-led-rust-arduino)
+* [07-multisegment-led-rust-arduino](posts/hello-world/07-multisegment-led-rust-arduino)
 
 #### Source
 
@@ -54,23 +63,31 @@ Things I think you need but you can go cheap on:
 
 #### No Lab
 
-For the hello-world stuff, all you need is an arduino, a breadboard, some wires, a resistor, and an 8 segment LED. There are kits to be had for less than $25 that have all this and more.
+For the hello-world stuff, all you need is an arduino, a breadboard, some wires, a resistor, and an 8 segment LED. There are kits to be had for less than $25 that have all this and more. Or skip the kit and use a [simulator](https://duino4projects.com/arduino-simulator/)?
 
 ### Books
 
-The Art Of Electronics (old version, may cost ~$20-40)
+I have these books and recommend each of them:
 
-* https://www.thriftbooks.com/w/the-art-of-electronics_paul-horowitz_winfield-hill/248534/#isbn=0521231515&idiq=4482077
+* [The Art Of Electronics (old version, may cost ~$20-40)](https://www.thriftbooks.com/w/the-art-of-electronics_paul-horowitz_winfield-hill/248534/#isbn=0521231515&idiq=4482077)
+* [Or get the latest H&H, but $120 is pretty steep](https://www.adafruit.com/product/2356)
+* [Practical Electronics For Inventors](https://www.thriftbooks.com/w/practical-electronics-for-inventors_paul-scherz/308734/#isbn=0071452818&idiq=8674669)
+* [Rust](https://nostarch.com/Rust2018)
 
-Or get the latest, but $120 is pretty steep.
+I buy older books, then when I've read the whole thing (rarely but sometimes happens) I buy the new book. I'd recommend starting with old copies when possible. Note that I'm not going to use C or C++ if I can use Rust. It's a much much nicer language with lots of modern features and it seems to work well even on tiny chips like the ATMega328P.
 
-* https://www.adafruit.com/product/2356
+### Websites
 
-Practical Electronics For Inventors
+Khan Academy Electrical Engineering Series (excellent)
 
-* https://www.thriftbooks.com/w/practical-electronics-for-inventors_paul-scherz/308734/#isbn=0071452818&idiq=8674669
+* https://www.youtube.com/watch?v=ZRLXDiiUv8Q&list=PLSQl0a2vh4HCLqA-rhMi_Z_WnBkD3wUka
 
-I buy older books, then when I've read the whole thing (rarely but sometimes happens) I buy the new book.
+Random learning sites (dunno how useful these are)
+
+* https://www.electronicshub.org/electronics-projects-ideas/
+* http://www.learningaboutelectronics.com/Projects/
+* https://www.sparkfun.com/categories/157
+* https://learn.adafruit.com/
 
 ### Chips
 
@@ -81,7 +98,7 @@ on a board later. I also ordered 4 chips with resistor, oscillator, and socket f
 
 * https://www.microchip.com/wwwproducts/en/ATMEGA328P
 
-### Phase 2 : ESP32-S2
+### Phase 2 : ESP32-S2 or an STM32F3 Discovery board
 
 The dev kit is about $60 with shipping from digikey:
 
@@ -130,6 +147,9 @@ Using the F1C100s, output 'hello world' using a video codec such as H.264,H.263,
 
 Using the F1C100s, serve the 'hello world' video stream over the internet.
 
+### Phase 5
+
+Using an FPGA, output 'hello world'. I have yet to really think about this use case.
 
 # Notes
 
