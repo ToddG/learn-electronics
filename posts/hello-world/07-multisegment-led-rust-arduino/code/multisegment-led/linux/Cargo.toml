@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "mseg-bin",
+    "mseg-lib",
+    "mseg-test",
+]

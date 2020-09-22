@@ -3,15 +3,23 @@ Let's learn electronics together.
 
 ## Overview
 
-Starting with the most basic circuits (and ICs), let's learn electronics via small projects and tutorials that we share here. To start, I'm approaching this with a series of 'hello world' tasks that become increasingly more interesting, see the Goals section below.
+Starting with the most basic circuits (and ICs), let's learn electronics via
+small projects and tutorials that we share here. To start, I'm approaching this
+with a series of 'hello world' tasks that become increasingly more interesting and
+more complex.
 
 ## QuickStart
 
-### Phase 1
+Starting with just the Arduino IDE, let's start figuring out how to write to 
+a multi-segment LED (so we can eventually write something like `hello world` to
+one. Posts 01-05 use C and C++ to write to the hardware.
 
-#### Posts
+###### C/C++
 
-##### Hello World
+Here we start off using the Arduino IDE, then quickly shift to using Jetbrains
+CLion with the Arduino plugin. Then there is a little exploration into
+different OO patterns. However, at the end, my mounting frustration with C/C++
+and CMake encourages me to see if Rust can target these devices...
 
 * [01-multisegment-led](posts/hello-world/01-multisegment-led)
 * [02-multisegment-led-arduino-uno](posts/hello-world/02-multisegment-led-arduino-uno)
@@ -19,18 +27,40 @@ Starting with the most basic circuits (and ICs), let's learn electronics via sma
 * [04a-code-structure](posts/hello-world/04a-code-structure)
 * [04-multi-segment-characters](posts/hello-world/04-multi-segment-characters)
 * [05-multiplex](posts/hello-world/05-multiplex)
+
+
+## After QuickStart
+
+So Rust _can_ target the ATMega328P! This opens up the whole world of
+microprocessors to us. So, quickly read [The Rust Programming
+Language](https://nostarch.com/Rust2018). We can use these projects to both
+learn Rust, microprocessors, and then use both of those to help learn
+electronics.
+
 * [06-blinky-led-rust-arduino](posts/hello-world/06-blinky-led-rust-arduino)
 * [07-multisegment-led-rust-arduino](posts/hello-world/07-multisegment-led-rust-arduino)
 
-#### Source
+----
+----
+----
 
- * src/EightSegmentLED
+## Project (In Detail)
+
+
+
 
 ## Dependencies
 
 ### Software
 
-1. TODO
+1. [vim](https://www.vim.org/)
+
+Ha ha. Just kidding. Use whatever operating system, text editor, and other software that you want. I use:
+
+* gnu linux -> ubuntu distro
+* vim
+* Jetbrains tooling where necessary
+
 
 ### Tools
 
@@ -72,7 +102,7 @@ I have these books and recommend each of them:
 * [The Art Of Electronics (old version, may cost ~$20-40)](https://www.thriftbooks.com/w/the-art-of-electronics_paul-horowitz_winfield-hill/248534/#isbn=0521231515&idiq=4482077)
 * [Or get the latest H&H, but $120 is pretty steep](https://www.adafruit.com/product/2356)
 * [Practical Electronics For Inventors](https://www.thriftbooks.com/w/practical-electronics-for-inventors_paul-scherz/308734/#isbn=0071452818&idiq=8674669)
-* [Rust](https://nostarch.com/Rust2018)
+* [The Rust Programming Language](https://nostarch.com/Rust2018)
 
 I buy older books, then when I've read the whole thing (rarely but sometimes happens) I buy the new book. I'd recommend starting with old copies when possible. Note that I'm not going to use C or C++ if I can use Rust. It's a much much nicer language with lots of modern features and it seems to work well even on tiny chips like the ATMega328P.
 

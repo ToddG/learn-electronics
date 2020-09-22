@@ -1,0 +1,16 @@
+   Compiling mseg-lib v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/linux/mseg-lib)
+    Finished test [unoptimized + debuginfo] target(s) in 0.59s
+     Running /home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/linux/target/debug/deps/mseg_lib-d3f07cb06a782eb7
+
+running 2 tests
+test tests::it_works ... ok
+test tests::test_bits_set ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+   Doc-tests mseg-lib
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+

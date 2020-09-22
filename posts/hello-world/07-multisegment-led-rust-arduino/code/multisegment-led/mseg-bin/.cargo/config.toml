@@ -1,0 +1,11 @@
+[build]
+target = "../avr-atmega328p.json"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+[unstable]
+build-std = ["core"]
