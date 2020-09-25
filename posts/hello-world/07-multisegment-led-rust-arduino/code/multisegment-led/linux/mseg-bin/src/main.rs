@@ -51,8 +51,8 @@ fn main() {
 //    result = a >> b;
 //    println!("(a >> b) => {}, {:b} ",result, result);
 //
-//    let mut input:u8;
-//    let mut index:u8;
+//    let mut input:usize;
+//    let mut index:usize;
 //    let mut bres:bool;
 //
 //    input = 1;

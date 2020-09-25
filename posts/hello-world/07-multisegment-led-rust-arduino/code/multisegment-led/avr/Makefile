@@ -1,15 +1,12 @@
-
 .PHONY: help
 help:
 	# -----------------------------------------------------------------------------
 	# Targets:
 	#
-	#	clean 		: run `cargo clean` for each crate
-	#	help 		: show this message
 	#	build		: run `cargo build` for each crate
-	#	test		: run `cargo test` for the mseg-test crate
-	#	libtest		: build `mseg-lib` crate and run `cargo test` for the mseg-test crate
+	#	clean 		: run `cargo clean` for each crate
 	#	deploy		: use `avrdude` to deploy mseg-bin to device
+	#	help 		: show this message
 	#
 	# end.
 	# -----------------------------------------------------------------------------
@@ -26,15 +23,6 @@ build:
 	(cd mseg-lib && cargo build)
 	(cd mseg-bin && cargo build)
 	(cd mseg-test && cargo build)
-
-.PHONY: test
-test:
-	(cd mseg-test && cargo test)
-
-.PHONY: libtest
-libtest:
-	(cd mseg-lib && cargo build)
-	(cd mseg-test && cargo test)
 
 .PHONY: deploy
 deploy:

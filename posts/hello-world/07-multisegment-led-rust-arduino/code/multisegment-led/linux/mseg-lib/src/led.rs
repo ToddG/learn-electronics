@@ -19,18 +19,18 @@ use crate::hal;
     ///
 pub struct EightSegmentLEDCommonAnode {
     // com is either 3 or 8
-    pcom: u8,
+    pcom: usize,
     // digital IO pins
-    p7a: u8,
-    p6b: u8,
-    p4c: u8,
-    p2d: u8,
-    p1e: u8,
-    p9f: u8,
-    p10g: u8,
-    p5dp: u8,
+    p7a: usize,
+    p6b: usize,
+    p4c: usize,
+    p2d: usize,
+    p1e: usize,
+    p9f: usize,
+    p10g: usize,
+    p5dp: usize,
     // data to display
-    data: u8,
+    data: usize,
     // hardware abstraction layer
     hal: Box<dyn hal::HAL>,
 }
@@ -45,20 +45,20 @@ pub struct EightSegmentLEDCommonAnode {
 /// use mseg_lib::hal::*;
 ///
 /// //For testing, use the x86 platform
-/// let my_hal = x86::new_hal();
+/// let my_hal = x86::new_hal(10);
 ///
 /// let led = new_eight_segment_led_common_anode(1,2,3,4,5,6,7,8,9,my_hal);
 /// ```
 pub fn new_eight_segment_led_common_anode(
-    led_common_anode_digital_iopin: u8,
-    led_pin01e_digital_iopin: u8,
-    led_pin02d_digital_iopin: u8,
-    led_pin04c_digital_iopin: u8,
-    led_pin05dp_digital_iopin: u8,
-    led_pin06b_digital_iopin: u8,
-    led_pin07a_digital_iopin: u8,
-    led_pin09f_digital_iopin: u8,
-    led_pin10g_digital_iopi: u8,
+    led_common_anode_digital_iopin: usize,
+    led_pin01e_digital_iopin: usize,
+    led_pin02d_digital_iopin: usize,
+    led_pin04c_digital_iopin: usize,
+    led_pin05dp_digital_iopin: usize,
+    led_pin06b_digital_iopin: usize,
+    led_pin07a_digital_iopin: usize,
+    led_pin09f_digital_iopin: usize,
+    led_pin10g_digital_iopi: usize,
     hal: Box<dyn hal::HAL>,
 ) -> EightSegmentLEDCommonAnode {
     EightSegmentLEDCommonAnode {
@@ -83,7 +83,7 @@ impl EightSegmentLEDCommonAnode {
         v
     }
 
-    pub fn set(&mut self, input: u8) {
+    pub fn set(&mut self, input: usize) {
         self.data = input;
     }
 

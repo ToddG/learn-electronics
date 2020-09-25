@@ -17,6 +17,13 @@ the different use cases of the code:
 |bin|X|0|only runs on target device|
 |lib|X|X|invoked and tested by test code, and runs on target device|
 
+Well, we could except that I ran into weird bugs...
+
+* workspaces don't work well with embedded projects
+* embedded stuff doesn't use `std::` which is pervasive in rust apps 
+
+But we can still do this.
+
 ## Source
 
 [code](./code/multisegment-led)
@@ -24,9 +31,10 @@ the different use cases of the code:
 ## Steps
 
 * Create a project that targets the default OS (linux, whatever)
-* Get the code working here, with tests, etc.
-* Create a project that targets the AVR
+* Get the code working there, with tests, etc.
+* Create a second project that targets the AVR
 * Copy the code into the AVR project
+* Do whatever we have to in order to get things to compile on the AVR 
 
 Yeah, I should probably figure out how to cross compile, but there's a lot of
 weird annotations, like `#[no_std]` and I'm not sure how to properly IFDEF
@@ -96,8 +104,7 @@ $ cargo build
     Finished dev [unoptimized + debuginfo] target(s) in 0.71s
 ```
 
-
-#### Add tests
+#### Bit twidling
 
 And now for a brief departure. I know from the previous C/C++ version of this
 project that I'll need to be able to twiddle bits. So let's explore that now
@@ -240,294 +247,105 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 ```
+#### Linux implementation
 
-Additional Links:
-* https://immunant.com/blog/2020/01/bitfields/
-* https://doc.rust-lang.org/reference/type-layout.html
-* https://stackoverflow.com/questions/36061560/can-i-take-a-byte-array-and-deserialize-it-into-a-struct
-* https://stackoverflow.com/questions/38896155/what-is-the-bitwise-not-operator-in-rust
-* https://stackoverflow.com/questions/40467995/how-do-you-set-clear-and-toggle-a-single-bit-in-rust
-* https://doc.rust-lang.org/book/appendix-02-operators.html
-* https://doc.rust-lang.org/rust-by-example/flow_control/for.html
-
-
-
-
-
-### Create (AVR) Project (INPROC)
-=======
-This path is [littered with broken glass.](./bugs.md)
-
-### Create Project
->>>>>>> 65f4bf8... WIP: hello-world/07-multisegment-led-rust-arduino
+Here's what I came up with:
 
 ```
-mkdir -p code/multisegment-led
-cd code/multisegment-led
-```
-
-### Create crates
-
-Create mseg-bin:
-
-```bash
-cargo new --bin mseg-bin
-```
-
-Output...
-```bash
-    warning: compiling this new crate may not work due to invalid workspace configuration
-
-    failed to read `multisegment-led/mseg-lib/Cargo.toml`
-
-    Caused by:
-      No such file or directory (os error 2)
-         Created binary (application) `mseg-bin` package
-```
-
-Create mseg-lib:
-
-```bash
-cargo new --lib mseg-lib
-```
-
-Output...
-```bash
-warning: compiling this new crate may not work due to invalid workspace configuration
-
-failed to read `multisegment-led/mseg-test/Cargo.toml`
-
-Caused by:
-  No such file or directory (os error 2)
-     Created library `mseg-lib` package
-```
-
-Create mseg-test:
-
-```bash
-cargo new --lib mseg-test
-```
-
-Output...
-```bash
-Created library `mseg-test` package
-```
-
-Directories:
-
-```bash
-tree -a
-```
-
-Output...
-```bash
 .
-├── avr-atmega328p.json
-├── .gitignore
-├── Makefile
+├── Cargo.lock
+├── Cargo.toml
 ├── mseg-bin
-│   ├── .cargo
-│   │   └── config.toml
-│   ├── Cargo.lock
 │   ├── Cargo.toml
 │   └── src
 │       └── main.rs
 ├── mseg-lib
-│   ├── .cargo
-│   │   └── config.toml
-│   ├── Cargo.lock
+│   ├── cargo-test.txt
+│   ├── Cargo.toml
+│   └── src
+│       ├── bits.rs
+│       ├── cmap.rs
+│       ├── hal.rs
+│       ├── led.rs
+│       ├── lib.rs
+│       └── platform.rs
+├── mseg-test
 │   ├── Cargo.toml
 │   └── src
 │       └── lib.rs
-└── mseg-test
-    ├── .cargo
-    │   └── config.toml
-    ├── Cargo.lock
-    ├── Cargo.toml
-    └── src
-        └── lib.rs
+└── test.out
+
+6 directories, 15 files
 ```
 
-Makefile:
+The key part is that I created a hardware abstraction layer (hal) that can be
+implemented either by my desktop (x86) or by an arduino (avr). I'm not sure how
+helpful this will be, but it's been cool to develop against as I can run
+_almost_ the exact code that's going to run on the avr here on my
+desktop...modulo whatever fun and games I discover porting...
 
-```make
+#### Add tests
 
-.PHONY: help
-help:
-	# -----------------------------------------------------------------------------
-	# Targets:
-	#
-	#	clean 		: run `cargo clean` for each crate
-	#	help 		: show this message
-	#	build		: run `cargo build` for each crate
-	#	test		: run `cargo test` for the mseg-test crate
-	#	deploy		: use `avrdude` to deploy mseg-bin to device
-	#
-	# end.
-	# -----------------------------------------------------------------------------
-
-
-.PHONY: clean
-clean:
-	(cd mseg-lib && cargo clean)
-	(cd mseg-bin && cargo clean)
-	(cd mseg-test && cargo clean)
-
-.PHONY: build
-build:
-	(cd mseg-lib && cargo build)
-	(cd mseg-bin && cargo build)
-	(cd mseg-test && cargo build)
-
-.PHONY: deploy
-deploy:
-	(cd mseg-bin && avrdude -patmega328p -carduino -P/dev/ttyACM0 -D "-Uflash:w:target/avr-atmega328p/debug/mseg-bin.elf:e")
-```
-
-Build
+Make sure tests pass.
 
 ```
-make clean build deploy
+$ cargo test
+
+    Finished test [unoptimized + debuginfo] target(s) in 0.02s
+     Running target/debug/deps/mseg_bin-c2a8a2fe449d6726
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+     Running target/debug/deps/mseg_lib-d3f07cb06a782eb7
+
+running 2 tests
+test bits::tests::test_bits_set ... ok
+test tests::it_works ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+     Running target/debug/deps/mseg_test-2100ad5588352acd
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+   Doc-tests mseg-lib
+
+running 4 tests
+test src/led.rs - led::new_eight_segment_led_common_anode (line 42) ... ok
+test src/bits.rs - bits::get (line 44) ... ok
+test src/bits.rs - bits::set (line 15) ... ok
+test src/cmap.rs - cmap::segments (line 172) ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+   Doc-tests mseg-test
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
 ```
 
-Output...
-```
-(cd mseg-lib && cargo clean)
-(cd mseg-bin && cargo clean)
-(cd mseg-test && cargo clean)
-(cd mseg-lib && cargo build)
-   Compiling compiler_builtins v0.1.35
-   Compiling core v0.0.0 (/home/todd/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core)
-   Compiling proc-macro2 v1.0.21
-   Compiling unicode-xid v0.2.1
-   Compiling syn v1.0.41
-   Compiling semver-parser v0.7.0
-   Compiling proc-macro-hack v0.5.18
-   Compiling paste v1.0.1
-   Compiling semver v0.9.0
-   Compiling rustc_version v0.2.3
-   Compiling quote v1.0.7
-   Compiling bare-metal v0.2.5
-   Compiling ufmt-macros v0.1.1
-   Compiling avr-device-macros v0.2.2
-   Compiling rustc-std-workspace-core v1.99.0 (/home/todd/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/rustc-std-workspace-core)
-   Compiling nb v1.0.0
-   Compiling vcell v0.1.2
-   Compiling void v1.0.2
-   Compiling cfg-if v0.1.10
-   Compiling ufmt-write v0.1.0
-   Compiling panic-halt v0.2.0
-   Compiling ufmt v0.1.0
-   Compiling avr-device v0.2.2
-   Compiling nb v0.1.3
-   Compiling embedded-hal v0.2.4
-   Compiling avr-hal-generic v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling atmega328p-hal v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling arduino-uno v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling mseg-lib v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/mseg-lib)
-    Finished dev [unoptimized + debuginfo] target(s) in 32.39s
-(cd mseg-bin && cargo build)
-   Compiling compiler_builtins v0.1.35
-   Compiling core v0.0.0 (/home/todd/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core)
-   Compiling proc-macro2 v1.0.21
-   Compiling unicode-xid v0.2.1
-   Compiling semver-parser v0.7.0
-   Compiling syn v1.0.41
-   Compiling proc-macro-hack v0.5.18
-   Compiling paste v1.0.1
-   Compiling semver v0.9.0
-   Compiling rustc_version v0.2.3
-   Compiling bare-metal v0.2.5
-   Compiling quote v1.0.7
-   Compiling avr-device-macros v0.2.2
-   Compiling ufmt-macros v0.1.1
-   Compiling rustc-std-workspace-core v1.99.0 (/home/todd/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/rustc-std-workspace-core)
-   Compiling nb v1.0.0
-   Compiling vcell v0.1.2
-   Compiling void v1.0.2
-   Compiling cfg-if v0.1.10
-   Compiling ufmt-write v0.1.0
-   Compiling panic-halt v0.2.0
-   Compiling ufmt v0.1.0
-   Compiling avr-device v0.2.2
-   Compiling nb v0.1.3
-   Compiling embedded-hal v0.2.4
-   Compiling avr-hal-generic v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling atmega328p-hal v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling arduino-uno v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling mseg-lib v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/mseg-lib)
-   Compiling mseg-bin v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/mseg-bin)
-    Finished dev [unoptimized + debuginfo] target(s) in 33.71s
-(cd mseg-test && cargo build)
-    Updating crates.io index
-   Compiling compiler_builtins v0.1.35
-   Compiling core v0.0.0 (/home/todd/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core)
-   Compiling proc-macro2 v1.0.21
-   Compiling unicode-xid v0.2.1
-   Compiling syn v1.0.41
-   Compiling semver-parser v0.7.0
-   Compiling proc-macro-hack v0.5.18
-   Compiling paste v1.0.1
-   Compiling semver v0.9.0
-   Compiling rustc_version v0.2.3
-   Compiling bare-metal v0.2.5
-   Compiling quote v1.0.7
-   Compiling avr-device-macros v0.2.2
-   Compiling ufmt-macros v0.1.1
-   Compiling rustc-std-workspace-core v1.99.0 (/home/todd/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/rustc-std-workspace-core)
-   Compiling nb v1.0.0
-   Compiling vcell v0.1.2
-   Compiling cfg-if v0.1.10
-   Compiling void v1.0.2
-   Compiling ufmt-write v0.1.0
-   Compiling panic-halt v0.2.0
-   Compiling ufmt v0.1.0
-   Compiling avr-device v0.2.2
-   Compiling nb v0.1.3
-   Compiling embedded-hal v0.2.4
-   Compiling avr-hal-generic v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling atmega328p-hal v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling arduino-uno v0.1.0 (https://github.com/Rahix/avr-hal#ad6fedd3)
-   Compiling mseg-lib v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/mseg-lib)
-   Compiling mseg-test v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/mseg-test)
-    Finished dev [unoptimized + debuginfo] target(s) in 34.18s
-(cd mseg-bin && avrdude -patmega328p -carduino -P/dev/ttyACM0 -D "-Uflash:w:target/avr-atmega328p/debug/mseg-bin.elf:e")
 
-avrdude: AVR device initialized and ready to accept instructions
+### Create AVR Project
 
-Reading | ################################################## | 100% 0.12s
+Here, I create the `avr` project. Then I copy, file by file or code snippet by
+code snippet, the code from the `linux` implementation over here. Due to
+missing `std::` I suspect this will be interesting.
 
-avrdude: Device signature = 0x1e950f (probably m328p)
-avrdude: reading input file "target/avr-atmega328p/debug/mseg-bin.elf"
-avrdude: writing flash (10418 bytes):
-
-Writing | ################################################## | 100% 1.68s
-
-avrdude: 10418 bytes of flash written
-avrdude: verifying flash memory against target/avr-atmega328p/debug/mseg-bin.elf:
-avrdude: load data flash data from input file target/avr-atmega328p/debug/mseg-bin.elf:
-avrdude: input file target/avr-atmega328p/debug/mseg-bin.elf contains 10418 bytes
-avrdude: reading on-chip flash data:
-
-Reading | ################################################## | 100% 1.34s
-
-avrdude: verifying ...
-avrdude: 10418 bytes of flash verified
-
-avrdude: safemode: Fuses OK (E:00, H:00, L:00)
-
-avrdude done.  Thank you.
-```
-
-### Create the code for displaying multisegment led
-
-TODO: this is next
+TODO NEXT
 
 
 ## Links
 * https://articles.bchlr.de/traits-dynamic-dispatch-upcasting
 * https://book.avr-rust.com/002.1-installing-required-third-party-tools.html
 * https://dev.to/itnext/rust-basics-structs-methods-and-traits-3p64
+* https://doc.rust-lang.org/book/appendix-02-operators.html
 * https://doc.rust-lang.org/book/ch05-01-defining-structs.html
 * https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits
 * https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html
@@ -537,31 +355,41 @@ TODO: this is next
 * https://doc.rust-lang.org/cargo/reference/profiles.html#overrides
 * https://doc.rust-lang.org/nomicon/panic-handler.html
 * https://doc.rust-lang.org/reference/conditional-compilation.html
+* https://doc.rust-lang.org/reference/type-layout.html
+* https://doc.rust-lang.org/rust-by-example/flow_control/for.html
 * https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html
 * https://doc.rust-lang.org/rust-by-example/trait.html
 * https://doc.rust-lang.org/stable/rust-by-example/hello/print.html
 * https://doc.rust-lang.org/stable/rust-by-example/trait/impl_trait.html
 * https://doc.rust-lang.org/std/keyword.dyn.html
 * https://doc.rust-lang.org/unstable-book/language-features/lang-items.html
+* https://docs.rust-embedded.org/book/collections/index.html
 * https://docs.rust-embedded.org/discovery/02-requirements/index.html
 * https://droogmic.github.io/microrust/
 * https://fasterthanli.me/series/making-our-own-executable-packer
 * https://fasterthanli.me/series/making-our-own-executable-packer/part-12
 * https://github.com/avr-rust/
 * https://github.com/avr-rust/ruduino
+* https://immunant.com/blog/2020/01/bitfields/
 * https://joshleeb.com/blog/rust-traits-trait-objects/
+* https://k155la3.blog/2020/03/21/learning-embedded-rust-by-building-riscv-powered-robot-part-1/
 * https://lib.rs/no-std
+* https://matematikaadit.github.io/posts/rust-turbofish.html
 * https://medium.com/digitalfrontiers/rust-dynamic-dispatching-deep-dive-236a5896e49b
 * https://medium.com/swlh/rust-structs-options-and-traits-485eecd9c718
 * https://os.phil-opp.com/freestanding-rust-binary/
 * https://rust-embedded.github.io/book/intro/index.html
+* https://stackoverflow.com/questions/36061560/can-i-take-a-byte-array-and-deserialize-it-into-a-struct
 * https://stackoverflow.com/questions/37843379/is-it-possible-to-use-box-with-no-std
+* https://stackoverflow.com/questions/38896155/what-is-the-bitwise-not-operator-in-rust
+* https://stackoverflow.com/questions/40467995/how-do-you-set-clear-and-toggle-a-single-bit-in-rust
 * [The Rust Programming Language](https://nostarch.com/Rust2018)
 
 
 Bugs
 * https://stackoverflow.com/questions/63961435/rust-cargo-test-fails-for-arduino-targets-with-duplicate-lang-item-in-crate
 * https://github.com/Rahix/avr-hal/issues/71
+* https://github.com/japaric/heapless/issues/177
 
 ## End
 

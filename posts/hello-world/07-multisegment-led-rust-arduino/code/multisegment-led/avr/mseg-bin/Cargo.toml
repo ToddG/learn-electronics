@@ -11,4 +11,17 @@ edition = "2018"
 panic-halt = "0.2.0"
 arduino-uno = { git = "https://github.com/Rahix/avr-hal" }
 mseg-lib = { path = "../mseg-lib" }
-rlibc = "1.0.0"
+libc = "0.2"
+
+# Configure the build for minimal size
+[profile.dev]
+panic = "abort"
+lto = true
+opt-level = "s"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+debug = true
+lto = true
+opt-level = "s"

@@ -37,55 +37,55 @@
 ///!
 
 // segment indexes
-pub const SEGMENT_INDEX_A: u8 = 0;
-pub const SEGMENT_INDEX_B: u8 = 1;
-pub const SEGMENT_INDEX_C: u8 = 2;
-pub const SEGMENT_INDEX_D: u8 = 3;
-pub const SEGMENT_INDEX_E: u8 = 4;
-pub const SEGMENT_INDEX_F: u8 = 5;
-pub const SEGMENT_INDEX_G: u8 = 6;
-pub const SEGMENT_INDEX_DP: u8 = 7;
+pub const SEGMENT_INDEX_A: usize = 0;
+pub const SEGMENT_INDEX_B: usize = 1;
+pub const SEGMENT_INDEX_C: usize = 2;
+pub const SEGMENT_INDEX_D: usize = 3;
+pub const SEGMENT_INDEX_E: usize = 4;
+pub const SEGMENT_INDEX_F: usize = 5;
+pub const SEGMENT_INDEX_G: usize = 6;
+pub const SEGMENT_INDEX_DP: usize = 7;
 
 // numbers
-pub const NUM_ZERO: u8 = 0;
-pub const NUM_ONE: u8 = 1;
-pub const NUM_TWO: u8 = 2;
-pub const NUM_THREE: u8 = 3;
-pub const NUM_FOUR: u8 = 4;
-pub const NUM_FIVE: u8 = 5;
-pub const NUM_SIX: u8 = 6;
-pub const NUM_SEVEN: u8 = 7;
-pub const NUM_EIGHT: u8 = 8;
-pub const NUM_NINE: u8 = 9;
+pub const NUM_ZERO: usize = 0;
+pub const NUM_ONE: usize = 1;
+pub const NUM_TWO: usize = 2;
+pub const NUM_THREE: usize = 3;
+pub const NUM_FOUR: usize = 4;
+pub const NUM_FIVE: usize = 5;
+pub const NUM_SIX: usize = 6;
+pub const NUM_SEVEN: usize = 7;
+pub const NUM_EIGHT: usize = 8;
+pub const NUM_NINE: usize = 9;
 
 // characters
-pub const CHAR_A: u8 = 10;
-pub const CHAR_B: u8 = 11;
-pub const CHAR_C: u8 = 12;
-pub const CHAR_D: u8 = 13;
-pub const CHAR_E: u8 = 14;
-pub const CHAR_F: u8 = 15;
-pub const CHAR_G: u8 = 16;
-pub const CHAR_H: u8 = 17;
-pub const CHAR_I: u8 = 18;
-pub const CHAR_J: u8 = 19;
-pub const CHAR_K: u8 = 20;
-pub const CHAR_L: u8 = 21;
-pub const CHAR_M: u8 = 22;
-pub const CHAR_N: u8 = 23;
-pub const CHAR_O: u8 = 24;
-pub const CHAR_P: u8 = 25;
-pub const CHAR_Q: u8 = 26;
-pub const CHAR_R: u8 = 27;
-pub const CHAR_S: u8 = 28;
-pub const CHAR_T: u8 = 29;
-pub const CHAR_U: u8 = 30;
-pub const CHAR_V: u8 = 31;
-pub const CHAR_W: u8 = 32;
-pub const CHAR_X: u8 = 33;
-pub const CHAR_Y: u8 = 34;
-pub const CHAR_Z: u8 = 35;
-pub const CHAR_SPACE: u8 = 36;
+pub const CHAR_A: usize = 10;
+pub const CHAR_B: usize = 11;
+pub const CHAR_C: usize = 12;
+pub const CHAR_D: usize = 13;
+pub const CHAR_E: usize = 14;
+pub const CHAR_F: usize = 15;
+pub const CHAR_G: usize = 16;
+pub const CHAR_H: usize = 17;
+pub const CHAR_I: usize = 18;
+pub const CHAR_J: usize = 19;
+pub const CHAR_K: usize = 20;
+pub const CHAR_L: usize = 21;
+pub const CHAR_M: usize = 22;
+pub const CHAR_N: usize = 23;
+pub const CHAR_O: usize = 24;
+pub const CHAR_P: usize = 25;
+pub const CHAR_Q: usize = 26;
+pub const CHAR_R: usize = 27;
+pub const CHAR_S: usize = 28;
+pub const CHAR_T: usize = 29;
+pub const CHAR_U: usize = 30;
+pub const CHAR_V: usize = 31;
+pub const CHAR_W: usize = 32;
+pub const CHAR_X: usize = 33;
+pub const CHAR_Y: usize = 34;
+pub const CHAR_Z: usize = 35;
+pub const CHAR_SPACE: usize = 36;
 
 // error
 pub const ERROR: usize = 37;
@@ -96,10 +96,10 @@ pub const NUM_DISPLAY_ELEMENTS: usize = 38;
 /// 0bABCDEFG(DP)
 ///
 /// TODO: This is probably not nearly as compact as I was hoping.
-/// TODO: Examine generated binary and see if this is a packed `u8` or
+/// TODO: Examine generated binary and see if this is a packed `usize` or
 /// TODO: if this is expanded into an array of `usize` elements. Documentation
 /// TODO: suggests the latter, and that is why I have to call `.into()` to convert
-/// TODO: from `u8` to `usize` when indexing.
+/// TODO: from `usize` to `usize` when indexing.
 ///
 /// LINKS:
 /// * https://blog.yossarian.net/2020/05/20/Things-I-hate-about-rust
@@ -109,7 +109,7 @@ pub const NUM_DISPLAY_ELEMENTS: usize = 38;
 /// * https://doc.rust-lang.org/rust-by-example/custom_types/enum.html
 /// * https://doc.rust-lang.org/std/primitive.array.html
 /// * https://doc.rust-lang.org/std/primitive.bool.html#impl-BitAnd%3C%26%27_%20bool%3E
-/// * https://doc.rust-lang.org/std/primitive.u8.html
+/// * https://doc.rust-lang.org/std/primitive.usize.html
 /// * https://docs.rs/bit_field/0.10.0/bit_field/trait.BitArray.html
 /// * https://docs.rs/bitvec/0.19.1/bitvec/#examples
 /// * https://docs.rs/packed_struct/0.3.0/packed_struct/
@@ -119,7 +119,7 @@ pub const NUM_DISPLAY_ELEMENTS: usize = 38;
 /// binary size of `mseg-lib` to see how DISPLAY_SEGMENTS is getting laid out in the
 /// binary.
 /// * https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
-const DISPLAY_SEGMENTS:[u8; NUM_DISPLAY_ELEMENTS] = [
+const DISPLAY_SEGMENTS:[usize; NUM_DISPLAY_ELEMENTS] = [
     0b11111100, // NUM_ZERO
     0b01100000, // NUM_ONE
     0b11011010, // NUM_TWO
@@ -162,7 +162,7 @@ const DISPLAY_SEGMENTS:[u8; NUM_DISPLAY_ELEMENTS] = [
 
 /// Return the segments for a given character (CHAR_*) or a given
 /// number (NUM_*). Segments is the smallest data type that can
-/// encode an 8 segment LED display, so a `u8`.
+/// encode an 8 segment LED display, so a `usize`.
 ///
 /// Use the bits::set and bits::get with the SEGMENT_INDEX_* constants
 /// defined above.
@@ -183,7 +183,7 @@ const DISPLAY_SEGMENTS:[u8; NUM_DISPLAY_ELEMENTS] = [
 /// assert_eq!(bits::get(0b11111100, SEGMENT_INDEX_G), bits::get(x, SEGMENT_INDEX_G));
 /// assert_eq!(bits::get(0b11111100, SEGMENT_INDEX_DP), bits::get(x, SEGMENT_INDEX_DP));
 /// ```
-pub fn segments(input: usize) -> u8 {
+pub fn segments(input: usize) -> usize {
     return if input < NUM_DISPLAY_ELEMENTS - 1 {
         DISPLAY_SEGMENTS[input]
     } else {

@@ -1,8 +1,5 @@
-///! TODO: 1. introduce generics so that the input array
-///! TODO: can be any size. currently hardcoded to usize.
-///!
-///! TODO: 2. should I put in bounds checking? Right now the index could
-///! TODO: rollover if we leftshift more than the 8 bits in usize...
+///! TODO: should I put in bounds checking? Right now the index could
+///! TODO: rollover if we leftshift more than the number bits in T.
 ///!
 ///! Notes/Links:
 ///! * https://immunant.com/blog/2020/01/bitfields/
@@ -28,8 +25,8 @@
 /// let b4 = set(b2, 7, false);
 /// assert_eq!(0b00000001, b4);
 /// ```
-pub fn set(input: usize, index: usize, value: bool) -> usize {
-    let mask: usize = 1 << index;
+pub fn set(input: u8, index: usize, value: bool) -> u8 {
+    let mask: u8 = 1 << index;
     return if value {
         input | mask
     } else {
@@ -50,8 +47,8 @@ pub fn set(input: usize, index: usize, value: bool) -> usize {
 /// let b2 = get(0b00000001, 1);
 /// assert_eq!(b2, false);
 /// ```
-pub fn get(input: usize, index: usize) -> bool {
-    let mask: usize = 1 << index;
+pub fn get(input: u8, index: usize) -> bool {
+    let mask: u8 = 1 << index;
     let mut result = input & mask;
     result >>= index;
     return if result == 1 { true } else { false };
@@ -62,7 +59,7 @@ mod tests {
     #[test]
     /// set each bit on, one at a time, and verify that all the other bits are off.
     fn test_bits_set() {
-        let b: usize = 0b00000000;
+        let b: u8 = 0b00000000;
         use super::*;
 
         for i in 0..8 {
