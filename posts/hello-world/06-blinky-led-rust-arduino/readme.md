@@ -66,6 +66,13 @@ Ok, so we have a config and a 'hello world' app...
 
 ### Toolchain
 
+#### Install rust
+
+See [rust docs for install instructions](https://www.rust-lang.org/tools/install).
+
+Then make sure to run `update`:
+
+    rustup update
 
 #### Overrides
 
@@ -113,6 +120,10 @@ Cool. But where is that change made? I don't see any changes in the local direct
 
 Well, how about that. Ok, so now we know where to delete the override later.
 
+We could have also just created a local file named `rust-toolchain` that contains 'nightly':
+
+    $cat rust-toolchain
+    nightly
 
 #### Pacman
 

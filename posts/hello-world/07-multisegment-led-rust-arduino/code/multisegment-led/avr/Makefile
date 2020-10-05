@@ -26,4 +26,4 @@ build:
 
 .PHONY: deploy
 deploy:
-	(cd mseg-bin && avrdude -patmega328p -carduino -P/dev/ttyACM0 -D "-Uflash:w:target/avr-atmega328p/debug/mseg-bin.elf:e")
+	(cd mseg-bin && avrdude -v -patmega328p -carduino -P/dev/ttyACM0 -D "-Uflash:w:target/avr-atmega328p/debug/mseg-bin.elf:e")

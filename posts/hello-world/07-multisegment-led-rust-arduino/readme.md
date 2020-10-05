@@ -11,6 +11,7 @@ Programming Language](https://nostarch.com/Rust2018) they talk about Cargo
 Workspaces. I bet we could create a workspace and create separate crates for
 the different use cases of the code:
 
+
 |CODE|DEV ENV|TARGET DEVICE|NOTES|
 |----|-------|-------------|-----|
 |test|0|X|only runs on the dev environment|
@@ -22,326 +23,124 @@ Well, we could except that I ran into weird bugs...
 * workspaces don't work well with embedded projects
 * embedded stuff doesn't use `std::` which is pervasive in rust apps 
 
-But we can still do this.
+But we can still do this, but go `old school`:
 
-## Source
+## Strategy (oldschoolz)
 
-[code](./code/multisegment-led)
+1. Create a working desktop app (targets x_86)
+2. Add tests, etc., make it all work.
+3. Create a skeleton avr app (targets avr)
+4. Copy files from x_86 to avr project, file by file
+5. Here's where it gets interesting
+    a) Comment out stuff till things work
+    b) Re-read the rust book, web links, etc.
+    c) Ask questions on forums, write up tickets
+    d) Simplify the code, stop using stuff from `std::`
+    e) Use the led blinky light on the arduino extensively
+    f) GOTO 4
 
-## Steps
+Q: What happens if you have an array index error? Blinky don't blink.
+A: There are a _lot_ of things the compiler allowed that would blow the
+app up on the device. But if you have a blinky that's supposed to blink
+and doesn't...well, you can use that for line by line troubleshooting. 
+That's what I did.
 
-* Create a project that targets the default OS (linux, whatever)
-* Get the code working there, with tests, etc.
-* Create a second project that targets the AVR
-* Copy the code into the AVR project
-* Do whatever we have to in order to get things to compile on the AVR 
+## Code
 
-Yeah, I should probably figure out how to cross compile, but there's a lot of
-weird annotations, like `#[no_std]` and I'm not sure how to properly IFDEF
-these annotations so that I can cross compile the `lib` crate. So let's KISS
-and see how far we get...after all, this is _supposed_ to be about learning
-electronics...
+### X_86
 
-### Create (linux) Project
-
-Make the project dir and the crates:
-
-```
-mkdir -p code/multisegment-led/linux
-cd code/multisegment-led/linux
-cargo new --bin mseg-bin
-cargo new --bin mseg-lib
-cargo new --bin mseg-test
-```
-
-Create the top level cargo file, Cargo.toml:
+I won't go into the nitty gritty details of creating each file. [Look here for the code](./code/multisegment-led/linux):
 
 ```
-[workspace]
-
-members = [
-    "mseg-bin",
-    "mseg-lib",
-    "mseg-test",
-]
-```
-
-Here's what we have:
-
-```
-.
+code/multisegment-led/linux/
 ├── Cargo.lock
 ├── Cargo.toml
 ├── mseg-bin
-│   ├── Cargo.toml
-│   └── src
-│       └── main.rs
 ├── mseg-lib
-│   ├── Cargo.toml
-│   └── src
-│       └── lib.rs
-└── mseg-test
-    ├── Cargo.toml
-    └── src
-        └── lib.rs
-```
-
-Now let's make sure that both mseg-bin and mseg-test depend on mseg-lib. Add
-the `mseg-lib` dependency to each of their Cargo.toml files.
-
-```
-[dependencies]
-mseg-lib = { path = "../mseg-lib" }
-```
-
-Make sure this builds.
-
-```
-$ cargo build
-   Compiling mseg-lib v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/linux/mseg-lib)
-   Compiling mseg-test v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/linux/mseg-test)
-   Compiling mseg-bin v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/linux/mseg-bin)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.71s
-```
-
-#### Bit twidling
-
-And now for a brief departure. I know from the previous C/C++ version of this
-project that I'll need to be able to twiddle bits. So let's explore that now
-and add some tests for this.
-
-I'll start with this post:
-
-* https://www.tutorialspoint.com/rust/rust_bitwise_operators.htm
-
-So, taking that example as a starting point here's what I came up with:
-
-* Add the above code to the `msg-bin/src/main.rs` and understand how bit fields work.
-* Add a quick little `mod` to `mseg-lib` that gets and sets bit fields
-* Add some tests for the above
-
-Here's what that looks like:
-
-`msg-bin/src/main.rs`
-
-```
-extern crate mseg_lib;
-
-fn main() {
-   let a:i32 = 2;     // Bit presentation 10
-   let b:i32 = 3;     // Bit presentation 11
-
-   let mut result:i32;
-   
-   println!("--------------------------------");
-   println!("a => {} : {:b} : {:?}", a, a, a);
-   println!("b => {} : {:b} : {:?}", b, b, b);
-   println!("--------------------------------");
-
-   result = a & b;
-   println!("(a & b) => {}, {:b} ",result, result);
-
-   result = a | b;
-   println!("(a | b) => {}, {:b} ",result, result);
-
-   result = a ^ b;
-   println!("(a ^ b) => {}, {:b} ",result, result);
-
-   result = !b;
-   println!("(!b) => {}, {:b} ",result, result);
-
-   result = a << b;
-   println!("(a << b) => {}, {:b} ",result, result);
-
-   result = a >> b;
-   println!("(a >> b) => {}, {:b} ",result, result);
-
-   let mut input:u8;
-   let mut index:u8;
-   let mut bres:bool;
-
-   input = 1;
-   index = 1;
-   bres = mseg_lib::bits::get(input, index);
-   println!("(input, index, bres) => ({:b}, {}, {})", input, index, bres);
-
-   input = 0b11111111;
-   index = 0;
-   bres = mseg_lib::bits::get(input, index);
-   println!("(input, index, bres) => ({:b}, {}, {})", input, index, bres);
-   index = 1;
-   println!("(input, index, bres) => ({:b}, {}, {})", input, index, bres);
-
-   input = 0b00000000;
-
-   for i in 0..8 {
-      input = mseg_lib::bits::set(input, i);
-      bres = mseg_lib::bits::get(input, i);
-      println!("(input, index, bres) => ({:b}, {}, {})", input, i, bres);
-   }
-}
-```
-
-`mseg-lib/src/lib.rs`
-```
-pub mod bits {
-
-    pub fn set(input:u8, index:u8) -> u8 {
-        let mask:u8 = 1 << index;
-        input | mask
-    }
-    pub fn get(input:u8, index:u8) -> bool {
-        let mask:u8 = 1 << index;
-        let mut result = input & mask;
-        result >>= index;
-        return if result == 1 {
-            true
-        } else {
-            false
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_bits_set(){
-        let b: u8 = 0b00000000;
-
-        for i in 0..8 {
-            for j in 0..8 {
-                let actual = bits::get(bits::set(b, i), j);
-                if i == j {
-                    assert_eq!(true, actual);
-                }else{
-                    assert_eq!(false, actual);
-                }
-            }
-        }
-    }
-}
-```
-
-And a test run in `mseg-lib` looks like:
-
-```
-$ cd mseg-lib
-$ cargo test
-
-   Compiling mseg-lib v0.1.0 (/home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/linux/mseg-lib)
-    Finished test [unoptimized + debuginfo] target(s) in 0.59s
-     Running /home/todd/repos/personal/learn-electronics/posts/hello-world/07-multisegment-led-rust-arduino/code/multisegment-led/linux/target/debug/deps/mseg_lib-d3f07cb06a782eb7
-
-running 2 tests
-test tests::it_works ... ok
-test tests::test_bits_set ... ok
-
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-   Doc-tests mseg-lib
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-```
-#### Linux implementation
-
-Here's what I came up with:
-
-```
-.
-├── Cargo.lock
-├── Cargo.toml
-├── mseg-bin
-│   ├── Cargo.toml
-│   └── src
-│       └── main.rs
-├── mseg-lib
-│   ├── cargo-test.txt
-│   ├── Cargo.toml
-│   └── src
-│       ├── bits.rs
-│       ├── cmap.rs
-│       ├── hal.rs
-│       ├── led.rs
-│       ├── lib.rs
-│       └── platform.rs
 ├── mseg-test
-│   ├── Cargo.toml
-│   └── src
-│       └── lib.rs
-└── test.out
+└── target
 
-6 directories, 15 files
+4 directories, 2 files
 ```
 
-The key part is that I created a hardware abstraction layer (hal) that can be
-implemented either by my desktop (x86) or by an arduino (avr). I'm not sure how
-helpful this will be, but it's been cool to develop against as I can run
-_almost_ the exact code that's going to run on the avr here on my
-desktop...modulo whatever fun and games I discover porting...
-
-#### Add tests
-
-Make sure tests pass.
+Project is wrapped up with a top-level workspace.
 
 ```
-$ cargo test
-
-    Finished test [unoptimized + debuginfo] target(s) in 0.02s
-     Running target/debug/deps/mseg_bin-c2a8a2fe449d6726
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-     Running target/debug/deps/mseg_lib-d3f07cb06a782eb7
-
-running 2 tests
-test bits::tests::test_bits_set ... ok
-test tests::it_works ... ok
-
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-     Running target/debug/deps/mseg_test-2100ad5588352acd
-
-running 1 test
-test tests::it_works ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-   Doc-tests mseg-lib
-
-running 4 tests
-test src/led.rs - led::new_eight_segment_led_common_anode (line 42) ... ok
-test src/bits.rs - bits::get (line 44) ... ok
-test src/bits.rs - bits::set (line 15) ... ok
-test src/cmap.rs - cmap::segments (line 172) ... ok
-
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-   Doc-tests mseg-test
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
+cargo build
+cargo test
 ```
 
 
-### Create AVR Project
+### AVR
 
-Here, I create the `avr` project. Then I copy, file by file or code snippet by
-code snippet, the code from the `linux` implementation over here. Due to
-missing `std::` I suspect this will be interesting.
+I won't go into the nitty gritty details of creating each file. [Look here for the code](./code/multisegment-led/avr):
 
-TODO NEXT
+```
+code/multisegment-led/avr/
+├── avr-atmega328p.json
+├── dump-avr-timers.py
+├── Makefile
+├── mseg-bin
+├── mseg-lib
+├── mseg-test
+└── rust-toolchain
 
+3 directories, 4 files
+```
+
+Things to note:
+
+* dump-avr-timers.py : a nifty utility to help with specifying timers
+* top level Makefile b/c embedded apps and cargo workspaces don't play well
+  together
+* the code morphed _a lot_ from what it looked like on the linux version
+* turns out some of the ideas I had on the linux version (the hal for example)
+  just didn't work out in the avr version
+
+```
+./dump-avr-timers.py 1 2 300
+
+# ------------------------------------
+# interrupt frequency: f
+# prescaler: p
+# compare match register value: cmr
+# timers: t
+# ------------------------------------
+"f: 1, p: 1, cmr: 15999999.0, t: None"
+"f: 1, p: 8, cmr: 1999999.0, t: None"
+"f: 1, p: 64, cmr: 249999.0, t: None"
+"f: 1, p: 256, cmr: 62499.0, t: [1]"
+"f: 1, p: 1024, cmr: 15624.0, t: [1]"
+"f: 2, p: 1, cmr: 7999999.0, t: None"
+"f: 2, p: 8, cmr: 999999.0, t: None"
+"f: 2, p: 64, cmr: 124999.0, t: None"
+"f: 2, p: 256, cmr: 31249.0, t: [1]"
+"f: 2, p: 1024, cmr: 7811.5, t: [1]"
+"f: 300, p: 1, cmr: 53332.333333333336, t: [1]"
+"f: 300, p: 8, cmr: 6665.666666666667, t: [1]"
+"f: 300, p: 64, cmr: 832.3333333333334, t: [1]"
+"f: 300, p: 256, cmr: 207.33333333333334, t: [0, 2]"
+"f: 300, p: 1024, cmr: 51.083333333333336, t: [0, 2]"
+
+```
+
+To build and deploy:
+
+```
+make clean build deploy
+```
+
+I _could_ go full-circle and take learnings from the `avr` version and apply to the
+`linux` version. Instead, I'll apply the learnings to the next project.
+
+# Summary
+
+[Watch Video](./countup-timer-in-rust.mp4)
 
 ## Links
+
+This project required a _lot_ of reading. This is not the complete list:
+
 * https://articles.bchlr.de/traits-dynamic-dispatch-upcasting
 * https://book.avr-rust.com/002.1-installing-required-third-party-tools.html
 * https://dev.to/itnext/rust-basics-structs-methods-and-traits-3p64
@@ -383,13 +182,15 @@ TODO NEXT
 * https://stackoverflow.com/questions/37843379/is-it-possible-to-use-box-with-no-std
 * https://stackoverflow.com/questions/38896155/what-is-the-bitwise-not-operator-in-rust
 * https://stackoverflow.com/questions/40467995/how-do-you-set-clear-and-toggle-a-single-bit-in-rust
+* https://www.tutorialspoint.com/rust/rust_bitwise_operators.htm
 * [The Rust Programming Language](https://nostarch.com/Rust2018)
 
 
 Bugs
-* https://stackoverflow.com/questions/63961435/rust-cargo-test-fails-for-arduino-targets-with-duplicate-lang-item-in-crate
-* https://github.com/Rahix/avr-hal/issues/71
 * https://github.com/japaric/heapless/issues/177
+* https://github.com/Rahix/avr-hal/issues/71
+* https://github.com/Rahix/avr-hal/issues/75
+* https://stackoverflow.com/questions/63961435/rust-cargo-test-fails-for-arduino-targets-with-duplicate-lang-item-in-crate
 
 ## End
 
