@@ -40,6 +40,12 @@ electronics.
 * [06-blinky-led-rust-arduino](posts/hello-world/06-blinky-led-rust-arduino)
 * [07-multisegment-led-rust-arduino](posts/hello-world/07-multisegment-led-rust-arduino)
 
+Here's where I learn how hard multithreaded programming on devices can be:
+* [08-rust-timers](posts/hello-world/08-rust-timers)
+
+The good news is you can use timers without interrupts, and this is easy:
+* [09-six-segment-led](posts/hello-world/09-six-segment-led)
+
 ----
 ----
 ----
