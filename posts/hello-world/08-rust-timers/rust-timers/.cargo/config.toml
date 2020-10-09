@@ -1,0 +1,12 @@
+[build]
+target = "avr-atmega328p.json"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+# see https://os.phil-opp.com/minimal-rust-kernel/
+[unstable]
+build-std = ["core", "compiler_builtins"]
